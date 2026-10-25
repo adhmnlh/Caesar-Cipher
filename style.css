@@ -53,6 +53,10 @@ body {
   box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.25);
 }
 
+.format-select:focus {
+  box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.18);
+}
+
 /* ---------- Action button glow on hover ---------- */
 #encryptBtn:hover {
   box-shadow: 0 0 14px rgba(0, 255, 136, 0.35);

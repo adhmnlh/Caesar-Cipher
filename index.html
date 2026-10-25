@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Caesar Cipher Encryptor</title>
+    <title>Caesar Cipher Toolkit</title>
 
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -59,10 +59,10 @@
         </svg>
         <div>
           <h1 class="text-lg font-bold tracking-widest text-cyber-green uppercase">
-            Caesar Cipher Encryptor
+            Caesar Cipher Toolkit
           </h1>
           <p class="text-xs text-cyber-muted tracking-wide">
-            Classical cryptography tool — shift-based text encryption
+            Encrypt, decrypt, and convert between text and UTF-8 binary
           </p>
         </div>
       </div>
@@ -77,9 +77,21 @@
 
         <!-- Input Message -->
         <div class="space-y-2">
-          <label for="inputText" class="block text-sm font-medium text-cyber-green tracking-wider uppercase">
-            Message
-          </label>
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <label for="inputText" class="block text-sm font-medium text-cyber-green tracking-wider uppercase">
+              Message
+            </label>
+            <div class="flex items-center gap-2">
+              <label for="inputFormat" class="text-xs text-cyber-muted">Input format</label>
+              <select
+                id="inputFormat"
+                class="format-select rounded-lg bg-cyber-surface border border-cyber-border text-cyber-text text-xs px-3 py-2 focus:outline-none focus:border-cyber-green"
+              >
+                <option value="text">Text</option>
+                <option value="binary">Binary (UTF-8)</option>
+              </select>
+            </div>
+          </div>
           <textarea
             id="inputText"
             rows="4"
@@ -87,6 +99,19 @@
             class="input-field w-full rounded-xl bg-cyber-surface border border-cyber-border text-cyber-text placeholder-cyber-muted text-sm p-4 resize-none focus:outline-none focus:border-cyber-green transition-colors duration-200"
             spellcheck="false"
           ></textarea>
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <p id="inputHint" class="text-xs text-cyber-muted">
+              Binary input must contain complete 8-bit bytes, separated by spaces or entered continuously.
+            </p>
+            <button
+              id="swapFormatsBtn"
+              type="button"
+              class="self-start sm:self-auto rounded-lg border border-cyber-border px-3 py-1.5 text-xs text-cyber-muted hover:border-cyber-green hover:text-cyber-green transition-colors"
+              aria-label="Swap input and output formats"
+            >
+              ↔ Swap formats
+            </button>
+          </div>
         </div>
 
         <!-- Shift Key -->
@@ -161,19 +186,31 @@
             <label class="block text-sm font-medium text-cyber-green tracking-wider uppercase">
               Result
             </label>
-            <!-- Copy button -->
-            <button
-              id="copyBtn"
-              class="flex items-center gap-1.5 text-xs text-cyber-muted hover:text-cyber-green transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
-              aria-label="Copy result to clipboard"
-              disabled
-            >
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-              </svg>
-              <span id="copyLabel">Copy</span>
-            </button>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <label for="outputFormat" class="text-xs text-cyber-muted">Output format</label>
+                <select
+                  id="outputFormat"
+                  class="format-select rounded-lg bg-cyber-surface border border-cyber-border text-cyber-text text-xs px-3 py-2 focus:outline-none focus:border-cyber-green"
+                >
+                  <option value="text">Text</option>
+                  <option value="binary">Binary (UTF-8)</option>
+                </select>
+              </div>
+              <!-- Copy button -->
+              <button
+                id="copyBtn"
+                class="flex items-center gap-1.5 text-xs text-cyber-muted hover:text-cyber-green transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Copy result to clipboard"
+                disabled
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                </svg>
+                <span id="copyLabel">Copy</span>
+              </button>
+            </div>
           </div>
 
           <!-- Output box -->
@@ -201,7 +238,7 @@
     <!-- ===== FOOTER ===== -->
     <footer class="border-t border-cyber-border py-4 px-6 text-center">
       <p class="text-xs text-cyber-muted tracking-wide">
-        Caesar Cipher Encryptor &mdash; Built with HTML, Tailwind CSS &amp; Vanilla JS
+        Caesar Cipher Toolkit &mdash; Built with HTML, Tailwind CSS &amp; Vanilla JS
       </p>
     </footer>
 

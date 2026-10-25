@@ -1,13 +1,12 @@
 /**
  * script.js — Caesar Cipher Encryptor
  *
- * Implements the classic Caesar cipher algorithm using:
- *   - String manipulation
- *   - For loops
- *   - ASCII code conversion (charCodeAt / fromCharCode)
+ * Implements the classic Caesar cipher for text, with optional UTF-8
+ * binary input and output conversion.
  *
  * Only alphabetical characters (A-Z, a-z) are shifted.
- * Digits, spaces, punctuation, and symbols are preserved as-is.
+ * Digits, spaces, punctuation, and symbols are preserved as-is. Binary
+ * values are decoded to UTF-8 before ciphering and encoded after ciphering.
  */
 
 "use strict";
@@ -16,6 +15,10 @@
    DOM References
    ============================================================ */
 const inputText      = document.getElementById("inputText");
+const inputFormat    = document.getElementById("inputFormat");
+const outputFormat   = document.getElementById("outputFormat");
+const inputHint      = document.getElementById("inputHint");
+const swapFormatsBtn = document.getElementById("swapFormatsBtn");
 const shiftKeyInput  = document.getElementById("shiftKey");
 const encryptBtn     = document.getElementById("encryptBtn");
 const decryptBtn     = document.getElementById("decryptBtn");
@@ -90,7 +93,7 @@ function caesarCipher(text, shift, decrypt = false) {
  */
 function getValidInputs() {
   const text  = inputText.value;
-  const shift = parseInt(shiftKeyInput.value, 10);
+  const shift = Number(shiftKeyInput.value);
 
   // Check: message must not be empty
   if (text.trim() === "") {
@@ -99,12 +102,33 @@ function getValidInputs() {
   }
 
   // Check: shift must be a number in [1, 25]
-  if (isNaN(shift) || shift < 1 || shift > 25) {
+  if (!Number.isInteger(shift) || shift < 1 || shift > 25) {
     flashInvalid(shiftKeyInput, "Shift key must be between 1 and 25.");
     return null;
   }
 
-  return { text, shift };
+  let decodedText = text;
+
+  if (inputFormat.value === "binary") {
+    const bits = text.replace(/\s/g, "");
+    if (!/^[01]+$/.test(bits) || bits.length % 8 !== 0) {
+      flashInvalid(inputText, "Enter binary as complete 8-bit bytes (0 and 1 only).");
+      return null;
+    }
+
+    const bytes = new Uint8Array(bits.match(/.{8}/g).map((byte) => parseInt(byte, 2)));
+    try {
+      decodedText = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    } catch (error) {
+      if (error instanceof TypeError || (error && error.name === "TypeError")) {
+        flashInvalid(inputText, "Binary input is not valid UTF-8 text.");
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  return { text: decodedText, shift };
 }
 
 /**
@@ -137,8 +161,12 @@ function flashInvalid(element, message) {
  * @param {boolean} isEncrypt - True for encrypt mode, false for decrypt.
  */
 function renderOutput(result, isEncrypt) {
+  const formattedResult = outputFormat.value === "binary"
+    ? Array.from(new TextEncoder().encode(result), (byte) => byte.toString(2).padStart(8, "0")).join(" ")
+    : result;
+
   // Display the result
-  outputText.textContent = result;
+  outputText.textContent = formattedResult;
   outputText.classList.add("has-result", "animate-fade-in-up");
 
   // Remove animation class after it plays so it can re-trigger next time
@@ -154,10 +182,10 @@ function renderOutput(result, isEncrypt) {
 
   if (isEncrypt) {
     badgeLabel.classList.add("badge-encrypt");
-    badgeLabel.textContent = "⟳ Encrypted  |  Shift +" + shiftKeyInput.value;
+    badgeLabel.textContent = "⟳ Encrypted  |  Shift +" + shiftKeyInput.value + "  |  " + outputFormat.options[outputFormat.selectedIndex].text;
   } else {
     badgeLabel.classList.add("badge-decrypt");
-    badgeLabel.textContent = "⟲ Decrypted  |  Shift -" + shiftKeyInput.value;
+    badgeLabel.textContent = "⟲ Decrypted  |  Shift -" + shiftKeyInput.value + "  |  " + outputFormat.options[outputFormat.selectedIndex].text;
   }
 
   // Enable the copy button
@@ -206,6 +234,8 @@ function copyToClipboard() {
  */
 function clearAll() {
   inputText.value         = "";
+  inputFormat.value       = "text";
+  outputFormat.value      = "text";
   shiftKeyInput.value     = "3";
   outputText.textContent  = "Your result will appear here…";
   outputText.classList.remove("has-result", "animate-fade-in-up");
@@ -215,9 +245,22 @@ function clearAll() {
 
   copyBtn.disabled = true;
   resetCopyLabel();
+  updateInputHint();
 
   inputText.focus();
 }
+
+function updateInputHint() {
+  const isBinary = inputFormat.value === "binary";
+  inputText.placeholder = isBinary
+    ? "Paste binary bytes, e.g. 01001000 01101001…"
+    : "Type your message here…";
+  inputHint.textContent = isBinary
+    ? "Binary input must be valid UTF-8 in complete 8-bit bytes, separated by spaces or entered continuously."
+    : "Text input supports standard text; only A–Z and a–z are shifted.";
+}
+
+updateInputHint();
 
 /* ============================================================
    Event Listeners
@@ -243,6 +286,15 @@ decryptBtn.addEventListener("click", () => {
 
 // Clear button
 clearBtn.addEventListener("click", clearAll);
+
+inputFormat.addEventListener("change", updateInputHint);
+
+swapFormatsBtn.addEventListener("click", () => {
+  const currentInputFormat = inputFormat.value;
+  inputFormat.value = outputFormat.value;
+  outputFormat.value = currentInputFormat;
+  updateInputHint();
+});
 
 // Copy button
 copyBtn.addEventListener("click", copyToClipboard);
