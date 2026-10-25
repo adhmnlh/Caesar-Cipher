@@ -1,0 +1,133 @@
+/* =============================================================
+   style.css — Caesar Cipher Encryptor
+   Additional custom styles that complement Tailwind CSS.
+   Only styles that cannot be expressed cleanly with Tailwind
+   utility classes are placed here.
+   ============================================================= */
+
+/* ---------- Google Font import fallback ---------- */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ---------- Root / global ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ---------- Custom scrollbar (WebKit) ---------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d0f14;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2f3f;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00ff88;
+}
+
+/* ---------- Card shadow ---------- */
+.shadow-card {
+  box-shadow:
+    0 0 0 1px rgba(0, 255, 136, 0.05),
+    0 4px 24px rgba(0, 0, 0, 0.6),
+    0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* ---------- Input focus glow ---------- */
+.input-field:focus {
+  box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.25);
+}
+
+/* ---------- Action button glow on hover ---------- */
+#encryptBtn:hover {
+  box-shadow: 0 0 14px rgba(0, 255, 136, 0.35);
+}
+
+#decryptBtn:hover {
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.35);
+}
+
+/* ---------- Output box: populated state ---------- */
+.output-box.has-result {
+  color: #e2e8f0;       /* cyber-text */
+  font-style: normal;
+  border-color: rgba(0, 255, 136, 0.3);
+  background-color: #13161e;  /* cyber-surface */
+}
+
+/* ---------- Subtle scan-line texture overlay on card ---------- */
+section[aria-label="Caesar Cipher Tool"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(255, 255, 255, 0.012) 3px,
+    rgba(255, 255, 255, 0.012) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+section[aria-label="Caesar Cipher Tool"] {
+  position: relative;
+}
+
+/* All direct children sit above the scan-line layer */
+section[aria-label="Caesar Cipher Tool"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Operation badge colors ---------- */
+.badge-encrypt {
+  background-color: rgba(0, 255, 136, 0.12);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.badge-decrypt {
+  background-color: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* ---------- Copy feedback animation ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.2s ease-out forwards;
+}
+
+/* ---------- Number input: hide browser spin buttons ---------- */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

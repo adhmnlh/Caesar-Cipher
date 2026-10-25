@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caesar Cipher Encryptor</title>
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind custom config: extend with cyber-theme colors -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              cyber: {
+                bg:      "#0d0f14",
+                surface: "#13161e",
+                card:    "#1a1e2a",
+                border:  "#2a2f3f",
+                green:   "#00ff88",
+                blue:    "#3b82f6",
+                muted:   "#6b7280",
+                text:    "#e2e8f0",
+              },
+            },
+            fontFamily: {
+              mono: ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Google Font: JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body class="bg-cyber-bg text-cyber-text font-mono min-h-screen flex flex-col">
+
+    <!-- ===== HEADER ===== -->
+    <header class="border-b border-cyber-border py-5 px-6">
+      <div class="max-w-3xl mx-auto flex items-center gap-3">
+        <!-- Lock icon (inline SVG) -->
+        <svg
+          class="w-7 h-7 text-cyber-green flex-shrink-0"
+          fill="none" stroke="currentColor" stroke-width="2"
+          viewBox="0 0 24 24" aria-hidden="true"
+        >
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        <div>
+          <h1 class="text-lg font-bold tracking-widest text-cyber-green uppercase">
+            Caesar Cipher Encryptor
+          </h1>
+          <p class="text-xs text-cyber-muted tracking-wide">
+            Classical cryptography tool — shift-based text encryption
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== MAIN ===== -->
+    <main class="flex-1 flex items-center justify-center px-4 py-10">
+      <section
+        class="w-full max-w-3xl bg-cyber-card border border-cyber-border rounded-2xl shadow-card p-6 sm:p-8 space-y-6"
+        aria-label="Caesar Cipher Tool"
+      >
+
+        <!-- Input Message -->
+        <div class="space-y-2">
+          <label for="inputText" class="block text-sm font-medium text-cyber-green tracking-wider uppercase">
+            Message
+          </label>
+          <textarea
+            id="inputText"
+            rows="4"
+            placeholder="Type your message here…"
+            class="input-field w-full rounded-xl bg-cyber-surface border border-cyber-border text-cyber-text placeholder-cyber-muted text-sm p-4 resize-none focus:outline-none focus:border-cyber-green transition-colors duration-200"
+            spellcheck="false"
+          ></textarea>
+        </div>
+
+        <!-- Shift Key -->
+        <div class="space-y-2">
+          <label for="shiftKey" class="block text-sm font-medium text-cyber-green tracking-wider uppercase">
+            Shift Key
+          </label>
+          <div class="flex items-center gap-4">
+            <input
+              id="shiftKey"
+              type="number"
+              value="3"
+              min="1"
+              max="25"
+              class="input-field w-28 rounded-xl bg-cyber-surface border border-cyber-border text-cyber-text text-sm text-center p-3 focus:outline-none focus:border-cyber-green transition-colors duration-200"
+              aria-label="Number of positions to shift"
+            />
+            <p class="text-xs text-cyber-muted">
+              Enter a value between <span class="text-cyber-text">1</span> and <span class="text-cyber-text">25</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <!-- Encrypt -->
+          <button
+            id="encryptBtn"
+            class="action-btn flex-1 flex items-center justify-center gap-2 rounded-xl py-3 px-6 bg-cyber-green text-cyber-bg font-bold text-sm tracking-widest uppercase hover:brightness-110 active:scale-95 transition-all duration-150"
+            aria-label="Encrypt message"
+          >
+            <!-- Encrypt icon -->
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            Encrypt
+          </button>
+
+          <!-- Decrypt -->
+          <button
+            id="decryptBtn"
+            class="action-btn flex-1 flex items-center justify-center gap-2 rounded-xl py-3 px-6 bg-transparent border border-cyber-blue text-cyber-blue font-bold text-sm tracking-widest uppercase hover:bg-cyber-blue hover:text-white active:scale-95 transition-all duration-150"
+            aria-label="Decrypt message"
+          >
+            <!-- Decrypt icon -->
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 11V7a4 4 0 018 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+            </svg>
+            Decrypt
+          </button>
+
+          <!-- Clear -->
+          <button
+            id="clearBtn"
+            class="flex items-center justify-center gap-2 rounded-xl py-3 px-5 bg-transparent border border-cyber-border text-cyber-muted font-medium text-sm tracking-widest uppercase hover:border-red-500 hover:text-red-400 active:scale-95 transition-all duration-150"
+            aria-label="Clear all fields"
+          >
+            <!-- Trash icon -->
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Clear
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-cyber-border"></div>
+
+        <!-- Output -->
+        <div class="space-y-2" id="outputSection">
+          <div class="flex items-center justify-between">
+            <label class="block text-sm font-medium text-cyber-green tracking-wider uppercase">
+              Result
+            </label>
+            <!-- Copy button -->
+            <button
+              id="copyBtn"
+              class="flex items-center gap-1.5 text-xs text-cyber-muted hover:text-cyber-green transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Copy result to clipboard"
+              disabled
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+              </svg>
+              <span id="copyLabel">Copy</span>
+            </button>
+          </div>
+
+          <!-- Output box -->
+          <div
+            id="outputText"
+            class="output-box min-h-[6rem] w-full rounded-xl bg-cyber-surface border border-cyber-border text-sm p-4 text-cyber-muted italic select-all leading-relaxed break-all"
+            aria-live="polite"
+            aria-label="Output result"
+          >
+            Your result will appear here…
+          </div>
+
+          <!-- Operation badge -->
+          <div id="operationBadge" class="hidden">
+            <span
+              id="badgeLabel"
+              class="inline-block text-xs font-semibold tracking-widest uppercase px-3 py-1 rounded-full"
+            ></span>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="border-t border-cyber-border py-4 px-6 text-center">
+      <p class="text-xs text-cyber-muted tracking-wide">
+        Caesar Cipher Encryptor &mdash; Built with HTML, Tailwind CSS &amp; Vanilla JS
+      </p>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script src="script.js"></script>
+  </body>
+</html>
